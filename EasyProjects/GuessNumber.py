@@ -1,17 +1,17 @@
 #Welcome to a fun number guessing game, In this game, you get to choose the range for a randomly generated number and test your luck!
 import random
 
+
 flag = True;
 
 #Starts the game
-def gameStart():
-    #Storing the user input into two variables
-    user_inputX = int(input("Please enter the starting number for the range: "))
-    user_inputY = int(input("Please enter the ending number for the range: "))
+#Storing the user input into two variables
+user_inputX = int(input("Please enter the starting number for the range: "))
+user_inputY = int(input("Please enter the ending number for the range: "))
 
-    #Storing the random generate number in a variable
-    #user_inputY + 1: includes the endind number in the range
-    scrambledTheNumbers = random.randrange(user_inputX,user_inputY + 1)
+#Storing the random generate number in a variable
+#user_inputY + 1: includes the endind number in the range
+scrambledTheNumbers = random.randrange(user_inputX,user_inputY + 1)
 
 #Getting the user guess answer
 user_inputAnswer = int(input("Enter your guess number: "))
@@ -33,7 +33,10 @@ while flag == True:
 
         #Checks the user respond when restarting the game, if yes the game restarts, if no the game stops 
         if(user_inputRestart == "Yes" or user_inputRestart == "[Yes]"):
-            gameStart();
+            user_inputX = int(input("Please enter the starting number for the range: "))
+            user_inputY = int(input("Please enter the ending number for the range: "))
+            scrambledTheNumbers = random.randrange(user_inputX,user_inputY + 1)
+
             user_inputAnswer = int(input("Enter your guess number!: "))
         elif(user_inputRestart == "No" or user_inputRestart == "[No]"):
             flag = False

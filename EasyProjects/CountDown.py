@@ -1,6 +1,6 @@
-#A countdown timer 
+#A countdown timer app
 
-#time library
+#Time library
 import time
 import datetime
 
@@ -8,16 +8,18 @@ import datetime
 from tkinter import *
 
 # Creates the GUI
-root = Tk()
+window = Tk()
 
 #Sets the Title of the GUI as well as size in Height x Width
-root.title("TIMER")
-root.geometry("350x200")
-lbl = Label (root, text = "You there?")
-lbl.grid()
+window.title("TIMER")
+window.geometry("280x250")
+
+label1 = Label (window, text= "Hello, please enter timer in seconds: ", height= 2, width= 30).grid()
+label2 = Text (window, height= 2, width= 30).grid()
+label3 = Button(window, padx=20 , pady=20).grid()
 
 #Executes Tkinder
-root.mainloop()
+window.mainloop()
 
 # my_timer = int(input("Please enter the time in seconds: "))
 # my_date = datetime.datetime.now()

@@ -14,7 +14,7 @@ def button_click(number):
     current = entry.get()
     entry.delete(0, END)
     entry.insert(0, current + str(number))
-
+    
 #Clears the entry window
 def clear():
     entry.delete(0, END)
@@ -28,13 +28,62 @@ def add():
     f_num = float(first_number)
     entry.delete(0, END)
 
+#Substracts the numbers
+def sub():
+    global f_num
+    global math
+    first_number = entry.get()
+    math = "substraction"
+    f_num = float(first_number)
+    entry.delete(0, END)
+
+#Multiplies the numbers
+def mul():
+    global f_num
+    global math
+    first_number = entry.get()
+    math = "multiplication"
+    f_num = float(first_number)
+    entry.delete(0, END)
+
+#Divides the numbers
+def div():
+    global f_num
+    global math
+    first_number = entry.get()
+    math = "division"
+    f_num = float(first_number)
+    entry.delete(0, END)
+
+def dot():
+    current = entry.get()
+    if '.' not in current:
+        entry.delete(0, END)
+        entry.insert(0, current + '.')
+
+def percentage():
+    global f_num
+    global math
+    first_number = entry.get()
+    math = "percentage"
+    f_num = float(first_number)
+    entry.delete(0, END)
+
 #Calculates the input numbers
 def calculate():
     second_number = entry.get()
     entry.delete(0, END)
     if math == "addition":
         entry.insert(0, f_num + float(second_number))
-
+    if math == "substraction":
+        entry.insert(0,f_num - float(second_number))
+    if math == "multiplication":
+        entry.insert(0,f_num * float(second_number))
+    if math == "division":
+        entry.insert(0,f_num / float(second_number))
+    if math == "percentage":
+        entry.insert(0, f_num * (float(second_number) / 100))
+        
 #Creates the number buttons from 0 to 9
 button_0 = Button(window, text="0", padx=20, pady=20, command=lambda: button_click(0))
 button_1 = Button(window, text="1", padx=20, pady=20, command=lambda: button_click(1))
@@ -49,20 +98,15 @@ button_9 = Button(window, text="9", padx=20, pady=20, command=lambda: button_cli
 
 #Creates the operator buttons
 button_add = Button(window, text="+", padx=37, pady=20, command=add)
+button_sub = Button(window, text="-", padx=37, pady=20, command=sub)
+button_mul = Button(window, text="x", padx=37, pady=20, command=mul)
+button_div = Button(window, text="/", padx=37, pady=20, command=div)
 
-### Work in progress ###
-button_sub = Button(window, text="-", padx=37, pady=20, command=add)
-button_mul = Button(window, text="x", padx=37, pady=20, command=add)
-button_div = Button(window, text="/", padx=37, pady=20, command=add)
-### Work in progress ###
-
+#Creates the special buttons
 button_equal = Button(window, text="=", padx=37, pady=20, command=calculate)
 button_clear = Button(window, text="CLEAR", padx=20, pady=20, command=clear)
-
-### Work in progress ###
-button_dot = Button(window, text=".", padx=20, pady=20, command=clear)
-button_percentage = Button(window, text="%", padx=20, pady=20, command=clear)
-### Work in progress ###
+button_dot = Button(window, text=".", padx=20, pady=20, command=dot)
+button_percentage = Button(window, text="%", padx=20, pady=20, command=percentage)
 
 #Places the numbers on the grid
 # 0, (.), (%), (=)  
@@ -89,9 +133,8 @@ button_8.grid(row=4, column=1)
 button_9.grid(row=4, column=2)
 button_sub.grid(row=4, column=3)
 
-### Work in progress ###
+# (*), (/)
 button_mul.grid(row=3, column=3)
 button_div.grid(row=2, column=3)
-### Work in progress ###
 
 window.mainloop()

@@ -1,6 +1,8 @@
 import ttkbootstrap as ttk # You will need to download this, Mac: pip3 install ttkbootstrap, Window: pip install ttkbootstrap
 import requests # You will need to download this, Mac: pip3 install requests, Window: pip install requests
 import os
+from PIL import Image, ImageTk
+from io import BytesIO 
 
 #Definitions
 def fetch_weather_data(event=None):
@@ -10,16 +12,30 @@ def fetch_weather_data(event=None):
     response = requests.get(URL).json()
     update_display(response)
 
+    #Hands the (url) to the display_weather DEF
+    ICON = "https://openweathermap.org/img/wn/" + response["weather"][0]["icon"] + "@2x.png"
+    display_weather(ICON)
+
+#Gets the icon image using the URL in openweathermap and displays it
+def display_weather(icon_url):
+    response = requests.get(icon_url)
+    if response.status_code == 200:
+        icon_data = response.content
+        image = Image.open(BytesIO(icon_data))
+        image = ImageTk.PhotoImage(image)
+        icon_label.config(image = image)
+        icon_label.image = image  
+
 #Updates the display every time the user enters city
 def update_display(response):
+    description_label.config(text = "" + response["weather"][0]["description"])
     temperature_label.config(text = "TEMPERATURE: " + str(response["main"]["temp"]) + " °F")
-    description_label.config(text = response["weather"][0]["description"])
     feels_like_label.config(text = "FEELS LIKE: " + str(response["main"]["feels_like"]) + " °F")
     humidity_label.config(text = "HUMIDITY: " + str(response["main"]["humidity"]) + " %")
     visibility_label.config(text = "VISIBILITY: " + str(get_Visibility(response)) + " Miles")
     windSpeed_label.config(text = "WINDSPEED: " + str(response["wind"]["speed"]) + " MPH")
     pressure_label.config(text = "PRESSURE: " + str(get_Pressure(response)) + " inHg")
-    tempMin_label.config(text = "MIN TEMPERATURE: " + str(response["main"]["temp_min"]) + " °F")
+    tempMin_label.config(text = "MIN TEMPERATURE: " + str(response["main"]["temp_min"]) + " °F -")
     tempMax_label.config(text = "MAX TEMPERATURE: " + str(response["main"]["temp_max"]) + " °F")
     
 #Turns Visibility from Km to Miles
@@ -30,6 +46,7 @@ def get_Visibility(response):
 #Turns Pressure from hPA to inHg
 def get_Pressure(response):
     return f'{response["main"]["pressure"] * 0.02953:.2f}'
+
 
 ###################################################################
 #API KEY RETRIVAL
@@ -88,10 +105,10 @@ label_instructions = ttk.Label(master = input_Frame, text = "Please enter a City
 label_instructions.pack(side = "top", pady = 10)
 
 entry_Str = ttk.StringVar()
-entry = ttk.Entry(master = input_Frame, textvariable = entry_Str)
+entry = ttk.Entry(master = input_Frame, textvariable = entry_Str, bootstyle ="info")
 entry.pack(side = "left", padx= 5)
 
-enter_button = ttk.Button(master = input_Frame, text = "Enter", padding = (70,5), command = fetch_weather_data)
+enter_button = ttk.Button(master = input_Frame, text = "Enter", padding = (70,5), command = fetch_weather_data, bootstyle = "info")
 enter_button.pack(side = "right")
 
 input_Frame.pack(side = "top", pady= 20)
@@ -100,28 +117,32 @@ input_Frame.pack(side = "top", pady= 20)
 #First Section
 first_frame = ttk.Frame(master = window)
 
+description_label= ttk.Label(master = first_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
+icon_label = ttk.Label(first_frame, text="")
+
 temperature_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
-description_label= ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
 feels_like_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
 humidity_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
 visibility_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
 windSpeed_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
-
 pressure_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
 tempMin_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
 tempMax_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
 
-temperature_label.pack(side = "top")
+#Packs all the necessary labels in the first section
 description_label.pack(side = "top")
-feels_like_label.pack(side = "top")
-humidity_label.pack(side = "top")
-visibility_label.pack(side = "top")
-windSpeed_label.pack(side = "top")
+icon_label.pack(side="top", pady=20)
 
-pressure_label.pack(side = "top")
-tempMin_label.pack(side = "top")
-tempMax_label.pack(side = "top")
+temperature_label.pack(side = "top", pady = 1)
+feels_like_label.pack(side = "top", pady = 1)
+humidity_label.pack(side = "top", pady = 1)
+visibility_label.pack(side = "top", pady = 1)
+windSpeed_label.pack(side = "top", pady = 1)
+pressure_label.pack(side = "top", pady = 1)
 
+#LEFT / RIGHT
+tempMin_label.pack(side = "left", pady = 1)
+tempMax_label.pack(side = "right", pady = 1)
 
 first_frame.pack(side="top")
 ###################################################################
@@ -148,14 +169,11 @@ second_frame.pack(side="top")
     # URL = BASE_URL + api_key + "&q=" + CITY + "&units=imperial"
     # response = requests.get(URL).json()
 
-    #print(response)
-
 # response["main"]
 #{'temp': 57.38, 'feels_like': 55.31, 'temp_min': 49.68, 'temp_max': 61.95, 'pressure': 1015, 'humidity': 53}
 
 # response["weather"]
 #[{'id': 800, 'main': 'Clear', 'description': 'clear sky', 'icon': '01n'}]
-
 
 #Run
 window.mainloop()

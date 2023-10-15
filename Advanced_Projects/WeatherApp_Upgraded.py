@@ -12,10 +12,6 @@ def fetch_weather_data(event=None):
     response = requests.get(URL).json()
     update_display(response)
 
-    #Hands the (url) to the display_weather DEF
-    ICON = "https://openweathermap.org/img/wn/" + response["weather"][0]["icon"] + "@2x.png"
-    display_weather(ICON)
-
 #Gets the icon image using the URL in openweathermap and displays it
 def display_weather(icon_url):
     response = requests.get(icon_url)
@@ -24,19 +20,46 @@ def display_weather(icon_url):
         image = Image.open(BytesIO(icon_data))
         image = ImageTk.PhotoImage(image)
         icon_label.config(image = image)
-        icon_label.image = image  
-
+        icon_label.image = image
+    else: 
+        icon_label.config(image = None)
+        
 #Updates the display every time the user enters city
 def update_display(response):
-    description_label.config(text = "" + response["weather"][0]["description"])
-    temperature_label.config(text = "TEMPERATURE: " + str(response["main"]["temp"]) + " °F")
-    feels_like_label.config(text = "FEELS LIKE: " + str(response["main"]["feels_like"]) + " °F")
-    humidity_label.config(text = "HUMIDITY: " + str(response["main"]["humidity"]) + " %")
-    visibility_label.config(text = "VISIBILITY: " + str(get_Visibility(response)) + " Miles")
-    windSpeed_label.config(text = "WINDSPEED: " + str(response["wind"]["speed"]) + " MPH")
-    pressure_label.config(text = "PRESSURE: " + str(get_Pressure(response)) + " inHg")
-    tempMin_label.config(text = "MIN TEMPERATURE: " + str(response["main"]["temp_min"]) + " °F -")
-    tempMax_label.config(text = "MAX TEMPERATURE: " + str(response["main"]["temp_max"]) + " °F")
+
+    if response["cod"] == 200:
+        # Update labels with weather data
+        description_label.config(text="| " + response["weather"][0]["description"] + " |")
+        ICON = "https://openweathermap.org/img/wn/" + response["weather"][0]["icon"] + "@2x.png"
+        display_weather(ICON)
+
+        temperature_label.config(text="| TEMPERATURE: " + str(response["main"]["temp"]) + " °F |")
+        feels_like_label.config(text="FEELS LIKE: " + str(response["main"]["feels_like"]) + " °F")
+        humidity_label.config(text="HUMIDITY: " + str(response["main"]["humidity"]) + " %")
+        visibility_label.config(text="VISIBILITY: " + str(get_Visibility(response)) + " Miles")
+        windSpeed_label.config(text="WINDSPEED: " + str(response["wind"]["speed"]) + " MPH")
+        pressure_label.config(text="PRESSURE: " + str(get_Pressure(response)) + " inHg")
+        tempMin_label.config(text="| MIN TEMPERATURE: " + str(response["main"]["temp_min"]) + " °F |")
+        tempMax_label.config(text="| MAX TEMPERATURE: " + str(response["main"]["temp_max"]) + " °F |")
+
+        # Clear the error message
+        error_Label.config(text="")
+
+    elif response["cod"] != 200:
+        # Clear the weather data labels
+        description_label.config(text="")
+        temperature_label.config(text="")
+        feels_like_label.config(text="")
+        humidity_label.config(text="")
+        visibility_label.config(text="")
+        windSpeed_label.config(text="")
+        pressure_label.config(text="")
+        tempMin_label.config(text="")
+        tempMax_label.config(text="")
+
+        # Display the error message
+        error_Label.config(text="| API Request failed. Status code [" + str(response["cod"]) + "], Please enter a valid City or Country |")
+
     
 #Turns Visibility from Km to Miles
 def get_Visibility(response):
@@ -46,7 +69,6 @@ def get_Visibility(response):
 #Turns Pressure from hPA to inHg
 def get_Pressure(response):
     return f'{response["main"]["pressure"] * 0.02953:.2f}'
-
 
 ###################################################################
 #API KEY RETRIVAL
@@ -60,55 +82,24 @@ with open(api_key_file, "r") as file:
 
 ###################################################################
 
-
-window = ttk.Window(themename = "darkly")
+#Window start
+window = ttk.Window(themename = "flatly")
 window.title("KersevWeather")
 window.geometry("900x600")
 
-#Visual Layout#
-# lb0 = ttk.Label(master = input_Frame, text = "Entry", font = "Arial 14", background= "blue")
-# lb0.pack(side="left")
-# lb1 = ttk.Label(master = input_Frame, text = "Enter", font = "Arial 14", background= "blue")
-# lb1.pack(side="right")
-# lb2 = ttk.Label(master = first_frame, text = "Temp", font = "Arial 14", background= "blue")
-# lb2.pack(side="top")
-# lb3 = ttk.Label(master = first_frame, text = "Weather Description", font = "Arial 14", background= "blue")
-# lb3.pack(side="top")
-# lb4 = ttk.Label(master = first_frame, text = "Feels like", font = "Arial 14", background= "blue")
-# lb4.pack(side="top")
-
-# lb5 = ttk.Label(master = first_frame, text = "Humidity", font = "Arial 14", background= "blue")
-# lb5.pack(side="top")
-# lb6 = ttk.Label(master = first_frame, text = "Visibility", font = "Arial 14", background= "blue")
-# lb6.pack(side="top")
-# lb7 = ttk.Label(master = first_frame, text = "Windspeed", font = "Arial 14", background= "blue")
-# lb7.pack(side="top")
-# lb8 = ttk.Label(master = first_frame, text = "Pressure", font = "Arial 14", background= "blue")
-# lb8.pack(side="top")
-
-# lb9 = ttk.Label(master = first_frame, text = "Tempmin", font = "Arial 14", background= "red")
-# lb9.pack(side="left")
-# lb10 = ttk.Label(master = first_frame, text = "Tempmax", font = "Arial 14", background= "blue")
-# lb10.pack(side="left", padx = 5)
-
-# lb11 = ttk.Label(master = first_frame, text = "Sunset", font = "Arial 14", background= "red")
-# lb11.pack(side="right", padx = 5)
-# lb12 = ttk.Label(master = first_frame, text = "sunrise", font = "Arial 14", background= "blue")
-# lb12.pack(side="right")
-
-
 ###################################################################
 
-input_Frame = ttk.Frame(master = window)
+#Input / User frame 
+input_Frame = ttk.Frame(master = window, bootstyle = "info", padding= 5)
 
-label_instructions = ttk.Label(master = input_Frame, text = "Please enter a City or Country to retrieve Weather Information", font = "Arial 14")
+label_instructions = ttk.Label(master = input_Frame, text = "Please enter a City or Country to retrieve Weather Information", font = "Arial 14 bold")
 label_instructions.pack(side = "top", pady = 10)
 
 entry_Str = ttk.StringVar()
-entry = ttk.Entry(master = input_Frame, textvariable = entry_Str, bootstyle ="info")
+entry = ttk.Entry(master = input_Frame, textvariable = entry_Str, bootstyle ="darkly")
 entry.pack(side = "left", padx= 5)
 
-enter_button = ttk.Button(master = input_Frame, text = "Enter", padding = (70,5), command = fetch_weather_data, bootstyle = "info")
+enter_button = ttk.Button(master = input_Frame, text = "Enter", padding = (70,5), command = fetch_weather_data, bootstyle = "primary")
 enter_button.pack(side = "right")
 
 input_Frame.pack(side = "top", pady= 20)
@@ -117,21 +108,30 @@ input_Frame.pack(side = "top", pady= 20)
 #First Section
 first_frame = ttk.Frame(master = window)
 
-description_label= ttk.Label(master = first_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
+#Displays the error messages
+error_Label = ttk.Label(master=first_frame, text="", font= "Arial 14 bold", bootstyle = "danger")
+
+description_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
 icon_label = ttk.Label(first_frame, text="")
 
-temperature_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
-feels_like_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
-humidity_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
-visibility_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
-windSpeed_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
-pressure_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
-tempMin_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
-tempMax_label = ttk.Label(master = first_frame, text = "", font="Arial 12 bold")
-
 #Packs all the necessary labels in the first section
+error_Label.pack(side = "top")
 description_label.pack(side = "top")
 icon_label.pack(side="top", pady=20)
+
+first_frame.pack(side="top")
+###################################################################
+#Second Section
+second_frame = ttk.Frame(master = window)
+
+temperature_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "dark")
+feels_like_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "dark")
+humidity_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "dark")
+visibility_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "dark")
+windSpeed_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "dark")
+pressure_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "dark")
+tempMin_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "info")
+tempMax_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
 
 temperature_label.pack(side = "top", pady = 1)
 feels_like_label.pack(side = "top", pady = 1)
@@ -143,13 +143,6 @@ pressure_label.pack(side = "top", pady = 1)
 #LEFT / RIGHT
 tempMin_label.pack(side = "left", pady = 1)
 tempMax_label.pack(side = "right", pady = 1)
-
-first_frame.pack(side="top")
-###################################################################
-#Second Section
-second_frame = ttk.Frame(master = window)
-
-# 5 day forecast / maybe?
 
 second_frame.pack(side="top")
 

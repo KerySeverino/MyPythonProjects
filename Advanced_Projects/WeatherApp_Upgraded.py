@@ -46,28 +46,30 @@ def update_display(response):
         ICON = "https://openweathermap.org/img/wn/" + response["weather"][0]["icon"] + "@2x.png"
         display_weather(ICON)
 
-        temperature_label.config(text = "| TEMPERATURE: " + str(response["main"]["temp"]) + " °F |")
-        feels_like_label.config(text = "FEELS LIKE: " + str(response["main"]["feels_like"]) + " °F")
-        humidity_label.config(text = "HUMIDITY: " + str(response["main"]["humidity"]) + " %")
-        visibility_label.config(text = "VISIBILITY: " + str(get_Visibility(response)) + " Miles")
-        windSpeed_label.config(text = "WINDSPEED: " + str(response["wind"]["speed"]) + " MPH")
-        pressure_label.config(text = "PRESSURE: " + str(get_Pressure(response)) + " inHg")
-        tempMin_label.config(text = "| MIN TEMPERATURE: " + str(response["main"]["temp_min"]) + " °F |")
-        tempMax_label.config(text = "| MAX TEMPERATURE: " + str(response["main"]["temp_max"]) + " °F |")
+        day_text = ""
 
+        api_temp = "TEMPERATURE: " + str(response["main"]["temp"])  + " °F"
+        api_feels_like = "FEELS LIKE: " + str(response["main"]["feels_like"])  + " °F"
+        api_humidity = "HUMIDITY: " + str(response["main"]["humidity"])  + " %"
+        api_visibility = "VISIBILITY: " + str(get_Visibility(response)) + " Miles"
+        api_windspeed = "WINDSPEED: " + str(response["wind"]["speed"]) + " °F"
+        api_pressure = "PRESSURE: " + str(get_Pressure(response)) + " inHg"
+        api_mintemp = "| MIN TEMPERATURE: " + str(response["main"]["temp_min"]) + " °F |"
+        api_maxtemp = "| MAX TEMPERATURE: " + str(response["main"]["temp_max"]) + " °F |"
+        
+        # Updates the weekly_labels with the accumulated values
+        day_text += api_temp + "\n" + api_feels_like + "\n" + api_humidity + "\n" + api_visibility + "\n" + api_windspeed + "\n" + api_pressure + "\n"
+        
+        day_label.config(text = day_text)
+        tempMin_label.config(text = api_mintemp)
+        tempMax_label.config(text = api_maxtemp)
+        
         # Clear the error message from the window
         error_Label.config(text="")
 
     elif response["cod"] != 200:
         # Clear the current weather data from the window
-        today_label.config(text = "")
-        description_label.config(text="")
-        temperature_label.config(text="")
-        feels_like_label.config(text="")
-        humidity_label.config(text="")
-        visibility_label.config(text="")
-        windSpeed_label.config(text="")
-        pressure_label.config(text="")
+        day_label.config(text = "")
         tempMin_label.config(text="")
         tempMax_label.config(text="")
 
@@ -95,16 +97,16 @@ def update_weekly_display(week_response):
             api_date = week_response["list"][day]["dt_txt"].split(' ')[0]
             weekly_date_text += api_date + "\n"
 
-            api_description = week_response["list"][day]["weather"][0]["description"]
+            api_description = "| " + str(week_response["list"][day]["weather"][0]["description"]) + " |"
             weekly_description_text  += api_description + "\n"
 
-            api_temp = str(week_response["list"][day]["main"]["temp"])  + " °F"
+            api_temp =  "TEMPERATURE: " + str(week_response["list"][day]["main"]["temp"])  + " °F"
             weekly_temperature += api_temp + "\n"
 
-            api_feels_like = str(week_response["list"][day]["main"]["feels_like"])  + " °F"
+            api_feels_like =  "FEELS LIKE: " + str(week_response["list"][day]["main"]["feels_like"])  + " °F"
             weekly_feels_like += api_feels_like + "\n"
 
-            api_humidity = str(week_response["list"][day]["main"]["humidity"])  + " %"
+            api_humidity =  "HUMIDITY: " + str(week_response["list"][day]["main"]["humidity"])  + " %"
             weekly_humidity += api_humidity + "\n"
 
             api_mintemp = "| " + str(week_response["list"][day]["main"]["temp_min"]) + " °F |"
@@ -114,6 +116,7 @@ def update_weekly_display(week_response):
             weekly_max_temp += api_maxtemp + "\n"
 
         # Updates the weekly_labels with the accumulated values
+        weekly_label.config(text= "WEEKLY FORECAST")
         weekly_date_label.config(text = weekly_date_text)
         weekly_description_label.config(text = weekly_description_text)
         weekly_temp_label.config(text = weekly_temperature)
@@ -124,7 +127,7 @@ def update_weekly_display(week_response):
 
     else:
 
-        # Updates the weekly_labels with the accumulated dates
+        # Updates the weekly_labels values
         weekly_date_label.config(text = "")
         weekly_description_label.config(text = "")
         weekly_temp_label.config(text = "")
@@ -152,7 +155,7 @@ def fetch_click():
     gauge.step(10)
 
     #Removes the easter egg from the weather app
-    if current_gauge_value == 2200:
+    if current_gauge_value == 2220:
         gauge.pack_forget()
         click_me_Button.pack_forget()
 
@@ -200,6 +203,9 @@ def fetch_click():
         click_me_Button.config(text = "Wow..", bootstyle = "dark")
         third_frame.pack(side = "top")
     elif current_gauge_value == 2200:
+        click_me_Button.config(text = "I will be back..", bootstyle = "dark")
+        third_frame.pack(side = "top")
+    elif current_gauge_value == 2220:
         click_me_Button.config(text = "")
 
 
@@ -217,7 +223,7 @@ with open(api_key_file, "r") as file:
 #Window start
 window = ttk.Window(themename = "superhero")
 window.title("KersevWeather")
-window.geometry("1000x640")
+window.geometry("800x550")
 
 ###################################################################
 #Input / User Section
@@ -233,7 +239,7 @@ entry.pack(side = "left", padx= 5)
 enter_button = ttk.Button(master = input_Frame, text = "Enter", padding = (70,5), command = fetch_weather_data, bootstyle = "primary")
 enter_button.pack(side = "right")
 
-input_Frame.pack(side = "top", pady= 20)
+input_Frame.pack(side = "top", pady = 5)
 
 ###################################################################
 #First Section
@@ -255,31 +261,20 @@ error_Label.pack(side = "top")
 first_frame.pack(side="top")
 
 ###################################################################
-
 #Second Section
 second_frame = ttk.Frame(master = window)
 
-temperature_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-feels_like_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-humidity_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-visibility_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-windSpeed_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-pressure_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "light")
+day_label =  ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "light")
 tempMin_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "info")
 tempMax_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
 
-temperature_label.pack(side = "top", pady = 1)
-feels_like_label.pack(side = "top", pady = 1)
-humidity_label.pack(side = "top", pady = 1)
-visibility_label.pack(side = "top", pady = 1)
-windSpeed_label.pack(side = "top", pady = 1)
-pressure_label.pack(side = "top", pady = 1)
-
+#TOP / Center
+day_label.pack(side = "top", pady = 5)
 #LEFT / RIGHT
 tempMin_label.pack(side = "left", pady = 1)
 tempMax_label.pack(side = "right", pady = 1)
 
-second_frame.pack(side="top", pady= 40)
+second_frame.pack(side="top", pady = 20)
 
 ###################################################################
 # Third / Weekly Section
@@ -287,25 +282,28 @@ second_frame.pack(side="top", pady= 40)
 
 weekly_frame = ttk.Frame(master = window)
 
-weekly_date_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "success", padding = 5)
+weekly_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "success", padding = 5)
+weekly_label.pack(side = "top")
+
+weekly_date_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "success", padding = 5)
 weekly_date_label.pack(side = "left")
 
-weekly_description_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "danger", padding = 5)
+weekly_description_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "danger", padding = 5)
 weekly_description_label.pack(side = "left")
 
-weekly_temp_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "light", padding = 5)
+weekly_temp_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "light", padding = 5)
 weekly_temp_label.pack(side = "left")
 
-weekly_feels_like_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "light", padding = 5)
+weekly_feels_like_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "light", padding = 5)
 weekly_feels_like_label.pack(side = "left")
 
-weekly_humidity_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "light", padding = 5)
+weekly_humidity_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "light", padding = 5)
 weekly_humidity_label.pack(side = "left")
 
-weekly_mintemp_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "info", padding = 5)
+weekly_mintemp_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "info", padding = 5)
 weekly_mintemp_label.pack(side = "left")
 
-weekly_maxtemp_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "danger", padding = 5)
+weekly_maxtemp_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "danger", padding = 5)
 weekly_maxtemp_label.pack(side = "left")
 
 weekly_frame.pack(side = "top")
@@ -326,7 +324,7 @@ gauge.pack(fill=BOTH, expand=YES, padx=10, pady=10)
 click_me_Button = ttk.Button(master = third_frame, text = "Don't Click Me!", padding = (50,50), command = fetch_click, bootstyle = "primary")
 click_me_Button.pack(side = "bottom")
 
-third_frame.pack(side = "top")
+third_frame.pack(side = "top", pady = 5)
 ###################################################################
             
 #Run

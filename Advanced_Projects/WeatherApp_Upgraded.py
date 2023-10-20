@@ -3,10 +3,11 @@ import requests # You will need to download this, Mac: pip3 install requests, Wi
 import os #API KEY FILE - Retrival
 from PIL import Image, ImageTk #ICONS
 from io import BytesIO 
-from ttkbootstrap.constants import * #BOTH
+from ttkbootstrap.constants import * #Constants like (BOTH)
 
 ### All Definitions ###
 
+###################################################################   
 def fetch_weather_data(event=None):
     #Current weather data
     CITY = entry.get()
@@ -21,119 +22,7 @@ def fetch_weather_data(event=None):
     week_response = requests.get(WEEK_URL).json()
     update_weekly_display(week_response)
     
-###################################################################       
-def update_weekly_display(week_response):
-
-    # Weekly weather data display in the window 
-    if week_response["cod"] == str(200):
-        #Day 1
-        day1_time = week_response["list"][0]["dt_txt"]
-        day1 = day1_time.split(' ')[0]
-        day1_date.config(text =  str(day1))
-
-        day1_description_label.config(text = "| " + week_response["list"][0]["weather"][0]["description"] + " |")
-        day1_temp_label.config(text="TEMPERATURE: " + str(week_response["list"][0]["main"]["temp"]) + " °F")
-        day1_feelslike_label.config(text="FEELS LIKE: " + str(week_response["list"][0]["main"]["feels_like"]) + " °F")
-        day1_humidity_label.config(text="HUMIDITY: " + str(week_response["list"][0]["main"]["humidity"]) + " %")
-        day1_mintemp_label.config(text="| MIN TEMPERATURE: " + str(week_response["list"][0]["main"]["temp_min"]) + " °F |")
-        day1_maxtemp_label.config(text="| MAX TEMPERATURE: " + str(week_response["list"][0]["main"]["temp_max"]) + " °F |")
-
-        #Day 2
-        day2_time = week_response["list"][8]["dt_txt"]
-        day2 = day2_time.split(' ')[0]
-        day2_date.config(text =  str(day2))
-
-        day2_description_label.config(text = "| " + week_response["list"][8]["weather"][0]["description"] + " |")
-        day2_temp_label.config(text="TEMPERATURE: " + str(week_response["list"][8]["main"]["temp"]) + " °F")
-        day2_feelslike_label.config(text="FEELS LIKE: " + str(week_response["list"][8]["main"]["feels_like"]) + " °F")
-        day2_humidity_label.config(text="HUMIDITY: " + str(week_response["list"][8]["main"]["humidity"]) + " %")
-        day2_mintemp_label.config(text="| MIN TEMPERATURE: " + str(week_response["list"][8]["main"]["temp_min"]) + " °F |")
-        day2_maxtemp_label.config(text="| MAX TEMPERATURE: " + str(week_response["list"][8]["main"]["temp_max"]) + " °F |")
-
-        #Day 3
-        day3_time = week_response["list"][16]["dt_txt"]
-        day3 = day3_time.split(' ')[0]
-        day3_date.config(text =  str(day3))
-
-        day3_description_label.config(text = "| " + week_response["list"][16]["weather"][0]["description"] + " |")
-        day3_temp_label.config(text="TEMPERATURE: " + str(week_response["list"][16]["main"]["temp"]) + " °F")
-        day3_feelslike_label.config(text="FEELS LIKE: " + str(week_response["list"][16]["main"]["feels_like"]) + " °F")
-        day3_humidity_label.config(text="HUMIDITY: " + str(week_response["list"][16]["main"]["humidity"]) + " %")
-        day3_mintemp_label.config(text="| MIN TEMPERATURE: " + str(week_response["list"][16]["main"]["temp_min"]) + " °F |")
-        day3_maxtemp_label.config(text="| MAX TEMPERATURE: " + str(week_response["list"][16]["main"]["temp_max"]) + " °F |")
-
-        #Day 4
-        day4_time = week_response["list"][24]["dt_txt"]
-        day4 = day4_time.split(' ')[0]
-        day4_date.config(text =  str(day4))
-
-        day4_description_label.config(text = "| " + week_response["list"][24]["weather"][0]["description"] + " |")
-        day4_temp_label.config(text="TEMPERATURE: " + str(week_response["list"][24]["main"]["temp"]) + " °F")
-        day4_feelslike_label.config(text="FEELS LIKE: " + str(week_response["list"][24]["main"]["feels_like"]) + " °F")
-        day4_humidity_label.config(text="HUMIDITY: " + str(week_response["list"][24]["main"]["humidity"]) + " %")
-        day4_mintemp_label.config(text="| MIN TEMPERATURE: " + str(week_response["list"][24]["main"]["temp_min"]) + " °F |")
-        day4_maxtemp_label.config(text="| MAX TEMPERATURE: " + str(week_response["list"][24]["main"]["temp_max"]) + " °F |")
-
-        #Day 5
-        day5_time = week_response["list"][32]["dt_txt"]
-        day5 = day5_time.split(' ')[0]
-        day5_date.config(text =  str(day5))
-
-        day5_description_label.config(text = "| " + week_response["list"][32]["weather"][0]["description"] + " |")
-        day5_temp_label.config(text="TEMPERATURE: " + str(week_response["list"][32]["main"]["temp"]) + " °F")
-        day5_feelslike_label.config(text="FEELS LIKE: " + str(week_response["list"][32]["main"]["feels_like"]) + " °F")
-        day5_humidity_label.config(text="HUMIDITY: " + str(week_response["list"][32]["main"]["humidity"]) + " %")
-        day5_mintemp_label.config(text="| MIN TEMPERATURE: " + str(week_response["list"][32]["main"]["temp_min"]) + " °F |")
-        day5_maxtemp_label.config(text="| MAX TEMPERATURE: " + str(week_response["list"][32]["main"]["temp_max"]) + " °F |")
-
-    else:
-        #Clears the weather data from the window for day 1 to day 5
-        #Day 1
-        day1_date.config(text = "")
-        day1_description_label.config(text="")
-        day1_temp_label.config(text="")
-        day1_feelslike_label.config(text="")
-        day1_humidity_label.config(text="")
-        day1_mintemp_label.config(text="")
-        day1_maxtemp_label.config(text="")
-
-        #Day 2
-        day2_date.config(text = "")
-        day2_description_label.config(text="")
-        day2_temp_label.config(text="")
-        day2_feelslike_label.config(text="")
-        day2_humidity_label.config(text="")
-        day2_mintemp_label.config(text="")
-        day2_maxtemp_label.config(text="")
-
-        #Day 3
-        day3_date.config(text = "")
-        day3_description_label.config(text="")
-        day3_temp_label.config(text="")
-        day3_feelslike_label.config(text="")
-        day3_humidity_label.config(text="")
-        day3_mintemp_label.config(text="")
-        day3_maxtemp_label.config(text="")
-
-        #Day 4
-        day4_date.config(text = "")
-        day4_description_label.config(text="")
-        day4_temp_label.config(text="")
-        day4_feelslike_label.config(text="")
-        day4_humidity_label.config(text="")
-        day4_mintemp_label.config(text="")
-        day4_maxtemp_label.config(text="")
-
-        #Day 5
-        day5_date.config(text = "")
-        day5_description_label.config(text="")
-        day5_temp_label.config(text="")
-        day5_feelslike_label.config(text="")
-        day5_humidity_label.config(text="")
-        day5_mintemp_label.config(text="")
-        day5_maxtemp_label.config(text="")
-
-###################################################################
+###################################################################   
 #Current Weather Def's
 #Gets a image icon using API call, PIL, and BytesIO
 def display_weather(icon_url):
@@ -147,6 +36,7 @@ def display_weather(icon_url):
     else: 
         icon_label.pack_forget()
 
+###################################################################   
 #Updates the display every time the user enters city
 def update_display(response):
     if response["cod"] == 200:
@@ -184,6 +74,66 @@ def update_display(response):
         # Display the error message
         error_Label.config(text="| API Request failed. Status code [" + str(response["cod"]) + "], Please enter a valid City or Country |")
 
+###################################################################       
+def update_weekly_display(week_response):
+
+    # Weekly weather data display in the window 
+    if week_response["cod"] == str(200):
+
+        # Initialize an empty string to store the accumulated values
+        weekly_date_text = ""  
+        weekly_description_text = ""
+        weekly_temperature = ""
+        weekly_feels_like = ""
+        weekly_humidity = ""
+        weekly_min_temp = ""
+        weekly_max_temp = ""
+
+        time_skip = [0, 8, 16, 24, 32]
+
+        for day in time_skip:
+            api_date = week_response["list"][day]["dt_txt"].split(' ')[0]
+            weekly_date_text += api_date + "\n"
+
+            api_description = week_response["list"][day]["weather"][0]["description"]
+            weekly_description_text  += api_description + "\n"
+
+            api_temp = str(week_response["list"][day]["main"]["temp"])  + " °F"
+            weekly_temperature += api_temp + "\n"
+
+            api_feels_like = str(week_response["list"][day]["main"]["feels_like"])  + " °F"
+            weekly_feels_like += api_feels_like + "\n"
+
+            api_humidity = str(week_response["list"][day]["main"]["humidity"])  + " %"
+            weekly_humidity += api_humidity + "\n"
+
+            api_mintemp = "| " + str(week_response["list"][day]["main"]["temp_min"]) + " °F |"
+            weekly_min_temp += api_mintemp + "\n"
+
+            api_maxtemp =  "| " + str(week_response["list"][day]["main"]["temp_min"]) + " °F |" 
+            weekly_max_temp += api_maxtemp + "\n"
+
+        # Updates the weekly_labels with the accumulated values
+        weekly_date_label.config(text = weekly_date_text)
+        weekly_description_label.config(text = weekly_description_text)
+        weekly_temp_label.config(text = weekly_temperature)
+        weekly_feels_like_label.config(text = weekly_feels_like)
+        weekly_humidity_label.config(text = weekly_humidity)
+        weekly_mintemp_label.config(text = weekly_min_temp)
+        weekly_maxtemp_label.config(text = weekly_max_temp)
+
+    else:
+
+        # Updates the weekly_labels with the accumulated dates
+        weekly_date_label.config(text = "")
+        weekly_description_label.config(text = "")
+        weekly_temp_label.config(text = "")
+        weekly_feels_like_label.config(text = "")
+        weekly_humidity_label.config(text = "")
+        weekly_mintemp_label.config(text = "")
+        weekly_maxtemp_label.config(text = "")
+
+###################################################################
 #Turns Visibility from Km to Miles
 def get_Visibility(response):
     kilometers_visibility = response["visibility"] * 0.001
@@ -304,7 +254,6 @@ error_Label.pack(side = "top")
 
 first_frame.pack(side="top")
 
-
 ###################################################################
 
 #Second Section
@@ -332,116 +281,34 @@ tempMax_label.pack(side = "right", pady = 1)
 
 second_frame.pack(side="top", pady= 40)
 
-
 ###################################################################
-#Weekly Section
-#Day 1 Labels
-day1_frame = ttk.Frame(master = window)
+# Third / Weekly Section
+#Day Labels for DAY 1 TO DAY 5
 
-day1_date = ttk.Label(master = day1_frame, text = "", font = "Arial 12 bold", bootstyle = "success", padding = 5)
-day1_description_label = ttk.Label(master = day1_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
-day1_temp_label = ttk.Label(master = day1_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day1_feelslike_label = ttk.Label(master = day1_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day1_humidity_label = ttk.Label(master = day1_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day1_mintemp_label = ttk.Label(master = day1_frame, text = "", font="Arial 12 bold", bootstyle = "info")
-day1_maxtemp_label = ttk.Label(master = day1_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
+weekly_frame = ttk.Frame(master = window)
 
-day1_date.pack(side = "left")
-day1_description_label.pack(side = "left")
-day1_temp_label.pack(side = "left")
-day1_feelslike_label.pack(side = "left")
-day1_humidity_label.pack(side = "left")
-day1_mintemp_label.pack(side = "left") 
-day1_maxtemp_label.pack(side = "left")
-day1_frame.pack(side = "top")
+weekly_date_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "success", padding = 5)
+weekly_date_label.pack(side = "left")
 
-day2_frame = ttk.Frame(master = window)
+weekly_description_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "danger", padding = 5)
+weekly_description_label.pack(side = "left")
 
-#Day 2 Labels
-day2_date = ttk.Label(master = day2_frame, text = "", font = "Arial 12 bold", bootstyle = "success", padding = 5)
-day2_description_label = ttk.Label(master = day2_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
+weekly_temp_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "light", padding = 5)
+weekly_temp_label.pack(side = "left")
 
-day2_temp_label = ttk.Label(master = day2_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day2_feelslike_label = ttk.Label(master = day2_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day2_humidity_label = ttk.Label(master = day2_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day2_mintemp_label = ttk.Label(master = day2_frame, text = "", font="Arial 12 bold", bootstyle = "info")
-day2_maxtemp_label = ttk.Label(master = day2_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
+weekly_feels_like_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "light", padding = 5)
+weekly_feels_like_label.pack(side = "left")
 
-day2_date.pack(side = "left")
-day2_description_label.pack(side = "left")
-day2_temp_label.pack(side = "left")
-day2_feelslike_label.pack(side = "left")
-day2_humidity_label.pack(side = "left")
-day2_mintemp_label.pack(side = "left") 
-day2_maxtemp_label.pack(side = "left")
+weekly_humidity_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "light", padding = 5)
+weekly_humidity_label.pack(side = "left")
 
-day2_frame.pack(side = "top")
+weekly_mintemp_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "info", padding = 5)
+weekly_mintemp_label.pack(side = "left")
 
-#Day 3 Labels
-day3_frame = ttk.Frame(master = window)
+weekly_maxtemp_label = ttk.Label(master = weekly_frame, text = "TEST", font = "Arial 12 bold", bootstyle = "danger", padding = 5)
+weekly_maxtemp_label.pack(side = "left")
 
-day3_date = ttk.Label(master = day3_frame, text = "", font = "Arial 12 bold", bootstyle = "success", padding = 5)
-day3_description_label = ttk.Label(master = day3_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
-
-day3_temp_label = ttk.Label(master = day3_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day3_feelslike_label = ttk.Label(master = day3_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day3_humidity_label = ttk.Label(master = day3_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day3_mintemp_label = ttk.Label(master = day3_frame, text = "", font="Arial 12 bold", bootstyle = "info")
-day3_maxtemp_label = ttk.Label(master = day3_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
-
-day3_date.pack(side = "left")
-day3_description_label.pack(side = "left")
-day3_temp_label.pack(side = "left")
-day3_feelslike_label.pack(side = "left")
-day3_humidity_label.pack(side = "left")
-day3_mintemp_label.pack(side = "left") 
-day3_maxtemp_label.pack(side = "left")
-
-day3_frame.pack(side = "top")
-
-#Day 4 Labels
-day4_frame = ttk.Frame(master = window)
-
-day4_date = ttk.Label(master = day4_frame, text = "", font = "Arial 12 bold", bootstyle = "success", padding = 5)
-day4_description_label = ttk.Label(master = day4_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
-
-day4_temp_label = ttk.Label(master = day4_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day4_feelslike_label = ttk.Label(master = day4_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day4_humidity_label = ttk.Label(master = day4_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day4_mintemp_label = ttk.Label(master = day4_frame, text = "", font="Arial 12 bold", bootstyle = "info")
-day4_maxtemp_label = ttk.Label(master = day4_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
-
-day4_date.pack(side = "left")
-day4_description_label.pack(side = "left")
-day4_temp_label.pack(side = "left")
-day4_feelslike_label.pack(side = "left")
-day4_humidity_label.pack(side = "left")
-day4_mintemp_label.pack(side = "left") 
-day4_maxtemp_label.pack(side = "left")
-
-day4_frame.pack(side = "top")
-
-#Day 5 Labels
-day5_frame = ttk.Frame(master = window)
-
-day5_date = ttk.Label(master = day5_frame, text = "", font = "Arial 12 bold", bootstyle = "success",  padding = 5)
-day5_description_label = ttk.Label(master = day5_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
-
-day5_temp_label = ttk.Label(master = day5_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day5_feelslike_label = ttk.Label(master = day5_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day5_humidity_label = ttk.Label(master = day5_frame, text = "", font="Arial 12 bold", bootstyle = "light")
-day5_mintemp_label = ttk.Label(master = day5_frame, text = "", font="Arial 12 bold", bootstyle = "info")
-day5_maxtemp_label = ttk.Label(master = day5_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
-
-day5_date.pack(side = "left")
-day5_description_label.pack(side = "left")
-day5_temp_label.pack(side = "left")
-day5_feelslike_label.pack(side = "left")
-day5_humidity_label.pack(side = "left")
-day5_mintemp_label.pack(side = "left") 
-day5_maxtemp_label.pack(side = "left")
-
-day5_frame.pack(side = "top")
+weekly_frame.pack(side = "top")
 
 ###################################################################
 #Four section - Easter egg
@@ -461,6 +328,6 @@ click_me_Button.pack(side = "bottom")
 
 third_frame.pack(side = "top")
 ###################################################################
-
+            
 #Run
 window.mainloop()

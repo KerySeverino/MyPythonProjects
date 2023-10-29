@@ -4,7 +4,7 @@ import os #API KEY FILE - Retrival
 from PIL import Image, ImageTk #ICONS
 from io import BytesIO 
 from ttkbootstrap.constants import * #Constants like (BOTH)
-
+from ttkbootstrap import Style
 ### All Definitions ###
 
 ###################################################################   
@@ -137,6 +137,8 @@ def update_weekly_display(week_response):
         weekly_maxtemp_label.config(text = "")
 
 ###################################################################
+## Random defs holder: ##
+
 #Turns Visibility from Km to Miles
 def get_Visibility(response):
     kilometers_visibility = response["visibility"] * 0.001
@@ -145,6 +147,12 @@ def get_Visibility(response):
 #Turns Pressure from hPA to inHg
 def get_Pressure(response):
     return f'{response["main"]["pressure"] * 0.02953:.2f}'
+
+#Change theme
+def change_theme_button_click():
+    #Gets the theme style, and sets a new one
+    new_theme = theme_var.get()
+    style.theme_use(new_theme)
 
 ###################################################################
 #Easter egg configs
@@ -208,8 +216,8 @@ def fetch_click():
     elif current_gauge_value == 2220:
         click_me_Button.config(text = "")
 
-
 ###################################################################
+
 #API KEY RETRIVAL
 # Define the path to the API key file using a relative path
 api_key_file = os.path.expanduser("~/Desktop/MyProjects/weather_api_Key.txt")
@@ -223,7 +231,37 @@ with open(api_key_file, "r") as file:
 #Window start
 window = ttk.Window(themename = "superhero")
 window.title("KersevWeather")
-window.geometry("800x550")
+window.geometry("1100x900")
+style = Style()
+
+###################################################################
+#Theme Section
+theme_frame = ttk.Frame(master=window)
+
+#Theme options
+themes = [
+    ("Default", "superhero"),
+    ("Darkly", "darkly"),
+    ("Solar", "solar"),
+    ("Cyborg", "cyborg"),
+    ("Vapor", "vapor"),
+    ("Morph", "morph"),
+    ("Journal", "journal"),
+    ("Cosmo", "cosmo"),
+    ("Minty", "minty"),
+    ("Pulse", "pulse"),
+    ("Simplex", "simplex"),
+    ("Yeti", "yeti")
+]
+
+# Set a default theme
+theme_var = ttk.StringVar(value = "superhero")  
+
+#Gets the theme style
+for theme_name, theme_value in themes:
+    ttk.Radiobutton(theme_frame, text = f"| {theme_name} |", variable = theme_var, value = theme_value, command = change_theme_button_click).pack(side="left", padx=5)
+
+theme_frame.pack(side = "top", pady= 20)
 
 ###################################################################
 #Input / User Section
@@ -264,7 +302,7 @@ first_frame.pack(side="top")
 #Second Section
 second_frame = ttk.Frame(master = window)
 
-day_label =  ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "light")
+day_label =  ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "primary")
 tempMin_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "info")
 tempMax_label = ttk.Label(master = second_frame, text = "", font="Arial 12 bold", bootstyle = "danger")
 
@@ -291,13 +329,13 @@ weekly_date_label.pack(side = "left")
 weekly_description_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "danger", padding = 5)
 weekly_description_label.pack(side = "left")
 
-weekly_temp_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "light", padding = 5)
+weekly_temp_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "primary", padding = 5)
 weekly_temp_label.pack(side = "left")
 
-weekly_feels_like_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "light", padding = 5)
+weekly_feels_like_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "primary", padding = 5)
 weekly_feels_like_label.pack(side = "left")
 
-weekly_humidity_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "light", padding = 5)
+weekly_humidity_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "primary", padding = 5)
 weekly_humidity_label.pack(side = "left")
 
 weekly_mintemp_label = ttk.Label(master = weekly_frame, text = "", font = "Arial 12 bold", bootstyle = "info", padding = 5)
@@ -326,6 +364,6 @@ click_me_Button.pack(side = "bottom")
 
 third_frame.pack(side = "top", pady = 5)
 ###################################################################
-            
+
 #Run
 window.mainloop()

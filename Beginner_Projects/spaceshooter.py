@@ -2,6 +2,7 @@ import pygame
 import os
 import sys 
 import random
+
 """
 
 Idea: 
@@ -20,6 +21,7 @@ Steps to create game idea:
 
 Disclaimer: The sound effects and music are not mine, I optain them from (Pixabay.com) all the credit goes to the authors that created them.  
 """
+
 pygame.init() 
 pygame.mixer.init()
 
@@ -33,7 +35,7 @@ class Ship:
     def draw(self, screen):
         screen.blit(self.ship_image, (self.x, self.y))
      
-GREEN_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("assets", "player.png")), (80,80))
+GREEN_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("spaceshooter_assets", "player.png")), (80,80))
 class Player(Ship):
     def __init__(self, x, y, health):
         super().__init__(x, y, health)
@@ -43,7 +45,7 @@ class Player(Ship):
         self.lasers = []
         self.rect = self.ship_image.get_rect(topleft=(x, y))
 
-PLAYER_LASER = pygame.transform.scale(pygame.image.load(os.path.join("assets", "laser.png")), (20,20))
+PLAYER_LASER = pygame.transform.scale(pygame.image.load(os.path.join("spaceshooter_assets", "laser.png")), (20,20))
 class Laser:
     def __init__(self, x, y, img):
         self.x = x
@@ -69,10 +71,10 @@ class Laser:
 
         return None
     
-BOSS_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("assets", "boss_enemy.png")), (200, 200)) 
-TANK_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("assets", "tank_enemy.png")), (110,110)) 
-NORMAL_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("assets", "normal_enemy.png")), (70,70)) 
-FAST_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("assets", "fast_enemy.png")), (40,40))   
+BOSS_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("spaceshooter_assets", "boss_enemy.png")), (200, 200)) 
+TANK_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("spaceshooter_assets", "tank_enemy.png")), (110,110)) 
+NORMAL_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("spaceshooter_assets", "normal_enemy.png")), (70,70)) 
+FAST_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("spaceshooter_assets", "fast_enemy.png")), (40,40))   
 class Enemy(Ship):
     ENEMY_TYPES = {
         "boss": BOSS_SPACE_SHIP,
@@ -107,12 +109,12 @@ class Enemy(Ship):
 
 def main():
 
-    LASER_SOUND_FILE = "assets/laser_sound.mp3"
-    BOSS_BATTLE_SOUND_FILE = "assets/boss_sound.mp3"
-    BACKGROUND_SOUND_FILE = "assets/background_sound.mp3"
-    BOSS_SPAWN_SOUND_FILE = "assets/boss-spawn_sound.mp3" 
-    GAME_WON_SOUND = "assets/game-won_sound.mp3"
-    GAME_LOST_SOUND = "assets/game-over_sound.mp3"
+    LASER_SOUND_FILE = "spaceshooter_assets/laser_sound.mp3"
+    BOSS_BATTLE_SOUND_FILE = "spaceshooter_assets/boss_sound.mp3"
+    BACKGROUND_SOUND_FILE = "spaceshooter_assets/background_sound.mp3"
+    BOSS_SPAWN_SOUND_FILE = "spaceshooter_assets/boss-spawn_sound.mp3" 
+    GAME_WON_SOUND = "spaceshooter_assets/game-won_sound.mp3"
+    GAME_LOST_SOUND = "spaceshooter_assets/game-over_sound.mp3"
 
     def play_sound(sound_file, volume=1.0):
         sound = pygame.mixer.Sound(sound_file)
@@ -138,7 +140,7 @@ def main():
     # Background Image
     pygame.display.set_caption("Space Invaders")
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    image_path = os.path.join("assets", "nightsky.png")
+    image_path = os.path.join("spaceshooter_assets", "nightsky.png")
     BG_IMG = pygame.transform.scale(pygame.image.load(image_path), (WIDTH, HEIGHT))
     
     def redraw_window(screen, bg_img):
@@ -283,8 +285,7 @@ def main():
             pygame.mixer.music.stop()
             play_sound(GAME_LOST_SOUND, 1.0)
             stop_sound = False
-                
-             
+                  
         """
         The if statements checks both the keys pressed and the player's position. 
         For example, it verifies whether a key is pressed and checks if the player is out of bounds before allowing movement. 
@@ -293,6 +294,7 @@ def main():
         Player controls: WASD or Arrow keys
         Having this in the while loop allows continuous movement while the key is pressed.
         """
+
         keys = pygame.key.get_pressed()
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and player_ship.x - player_velocity > 0:
             player_ship.x -= player_velocity

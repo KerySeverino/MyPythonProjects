@@ -18,8 +18,10 @@ Steps to create game idea:
 6. Implement enemy and collision so that once an enemy is hit a certain amount of times they die  - [Done]
 7. Implement wave system - [Done]
 
+Disclaimer: The sound effects and music are not mine, I optain them from (Pixabay.com) all the credit goes to the authors that created them.  
 """
 pygame.init() 
+pygame.mixer.init()
 
 class Ship:
     def __init__(self, x, y, health):
@@ -31,7 +33,7 @@ class Ship:
     def draw(self, screen):
         screen.blit(self.ship_image, (self.x, self.y))
      
-GREEN_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("Beginner_Projects", "assets", "player.png")), (80,80))
+GREEN_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("assets", "player.png")), (80,80))
 class Player(Ship):
     def __init__(self, x, y, health):
         super().__init__(x, y, health)
@@ -41,7 +43,7 @@ class Player(Ship):
         self.lasers = []
         self.rect = self.ship_image.get_rect(topleft=(x, y))
 
-PLAYER_LASER = pygame.transform.scale(pygame.image.load(os.path.join("Beginner_Projects", "assets", "laser.png")), (20,20))
+PLAYER_LASER = pygame.transform.scale(pygame.image.load(os.path.join("assets", "laser.png")), (20,20))
 class Laser:
     def __init__(self, x, y, img):
         self.x = x
@@ -67,10 +69,10 @@ class Laser:
 
         return None
     
-BOSS_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("Beginner_Projects", "assets", "boss_enemy.png")), (200, 200)) 
-TANK_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("Beginner_Projects", "assets", "tank_enemy.png")), (110,110)) 
-NORMAL_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("Beginner_Projects", "assets", "normal_enemy.png")), (70,70)) 
-FAST_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("Beginner_Projects", "assets", "fast_enemy.png")), (40,40))   
+BOSS_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("assets", "boss_enemy.png")), (200, 200)) 
+TANK_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("assets", "tank_enemy.png")), (110,110)) 
+NORMAL_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("assets", "normal_enemy.png")), (70,70)) 
+FAST_SPACE_SHIP = pygame.transform.scale(pygame.image.load(os.path.join("assets", "fast_enemy.png")), (40,40))   
 class Enemy(Ship):
     ENEMY_TYPES = {
         "boss": BOSS_SPACE_SHIP,
@@ -80,10 +82,10 @@ class Enemy(Ship):
     }
 
     ENEMY_SPEEDS = {
-        "boss": 0.6,
-        "tank": 1.6,    
-        "normal": 1.8,
-        "fast": 2
+        "boss": 0.4,
+        "tank": 1,    
+        "normal": 1.2,
+        "fast": 1.5
     }
 
     def __init__(self, x, y, health, enemy_type):
@@ -104,6 +106,19 @@ class Enemy(Ship):
         return self.health <= 0
 
 def main():
+
+    LASER_SOUND_FILE = "assets/laser_sound.mp3"
+    BOSS_BATTLE_SOUND_FILE = "assets/boss_sound.mp3"
+    BACKGROUND_SOUND_FILE = "assets/background_sound.mp3"
+    BOSS_SPAWN_SOUND_FILE = "assets/boss-spawn_sound.mp3" 
+    GAME_WON_SOUND = "assets/game-won_sound.mp3"
+    GAME_LOST_SOUND = "assets/game-over_sound.mp3"
+
+    def play_sound(sound_file, volume=1.0):
+        sound = pygame.mixer.Sound(sound_file)
+        sound.set_volume(volume)
+        sound.play()
+
     WIDTH, HEIGHT = 1000, 800
     FPS = 60
     wave = 0
@@ -113,7 +128,7 @@ def main():
     score = 0
 
     main_font = pygame.font.SysFont("comicsans", 30)
-    score_font = pygame.font.SysFont("comicsans", 15)
+    wave_font = pygame.font.SysFont("comicsans", 50)
     white_font_color = ((255,255,255))
     clock = pygame.time.Clock()
 
@@ -123,17 +138,32 @@ def main():
     # Background Image
     pygame.display.set_caption("Space Invaders")
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    image_path = os.path.join("Beginner_Projects", "assets", "nightsky.png")
+    image_path = os.path.join("assets", "nightsky.png")
     BG_IMG = pygame.transform.scale(pygame.image.load(image_path), (WIDTH, HEIGHT))
-
+    
     def redraw_window(screen, bg_img):
         screen.blit(bg_img, (0, 0))
 
+        #Wave label fade after 3 seconds
+        wave_label = wave_font.render(f"Wave {wave}", 1, white_font_color)
+        current_time = pygame.time.get_ticks()
+    
+        if wave == 1 and (current_time - start_time <= 3000):
+            screen.blit(wave_label, ((WIDTH - wave_label.get_width()) // 2, (HEIGHT - wave_label.get_height()) // 2))
+        elif wave == 2 and (current_time - start_time <= 3000):
+            screen.blit(wave_label, ((WIDTH - wave_label.get_width()) // 2, (HEIGHT - wave_label.get_height()) // 2))
+        elif wave == 3 and (current_time - start_time <= 3000):
+            screen.blit(wave_label, ((WIDTH - wave_label.get_width()) // 2, (HEIGHT - wave_label.get_height()) // 2))
+        elif wave == 4 and (current_time - start_time <= 3000):
+            screen.blit(wave_label, ((WIDTH - wave_label.get_width()) // 2, (HEIGHT - wave_label.get_height()) // 2))
+        elif wave == 5 and (current_time - start_time <= 3000):
+            screen.blit(wave_label, ((WIDTH - wave_label.get_width()) // 2, (HEIGHT - wave_label.get_height()) // 2))
+
         # Game screen info 
         health_label = main_font.render(f"Health: {player_ship.health}", 1, white_font_color)
-        wave_label = main_font.render(f"Wave: {wave}", 1, white_font_color)
+        score_label = main_font.render(f"Score: {score}", 1, white_font_color)
         screen.blit(health_label, (10, 10))
-        screen.blit(wave_label, (WIDTH - wave_label.get_width() - 10, 10))
+        screen.blit(score_label, (WIDTH - score_label.get_width() - 10, 10))
 
         # Player starting position
         player_ship.draw(screen)
@@ -162,28 +192,28 @@ def main():
                     player_ship.health = 0
                     enemies.remove(enemy)
                 else:
-                    player_ship.health -= 10
+                    player_ship.health -= 5
                     enemies.remove(enemy)
 
-        # Player Wins!
+        # Player Win! Draw
         if (len(enemies) == 0 and wave >= 5) and player_ship.health > 0:
-            win_label = main_font.render("YOU WIN!", 1, white_font_color)
-            score_label = score_font.render(f"Score: {score}", 1, white_font_color)
-            screen.blit(win_label, ((WIDTH - win_label.get_width()) / 2, (HEIGHT - win_label.get_height()) / 2))
-            screen.blit(score_label, ((WIDTH - win_label.get_width()) / 2 + 30, (HEIGHT - win_label.get_height()) / 2 + 60 )) 
-        # Player Loss!
+                win_label = main_font.render("YOU WIN!", 1, white_font_color)
+                screen.blit(win_label, ((WIDTH - win_label.get_width()) // 2, (HEIGHT - win_label.get_height()) // 2))
+        # Player Loss! Draw
         elif player_ship.health <= 0:
-            lost_label = main_font.render("GAME OVER!", 1, white_font_color)
-            score_label = score_font.render(f"Score: {score}", 1, white_font_color)
-            screen.blit(lost_label, ((WIDTH - lost_label.get_width()) / 2, (HEIGHT - lost_label.get_height()) / 2)) 
-            screen.blit(score_label, ((WIDTH - lost_label.get_width()) / 2 + 50, (HEIGHT - lost_label.get_height()) / 2 + 50 )) 
-             
+                lost_label = main_font.render("GAME OVER!", 1, white_font_color)
+                screen.blit(lost_label, ((WIDTH - lost_label.get_width()) // 2, (HEIGHT - lost_label.get_height()) // 2)) 
+
         pygame.display.update()
 
-    boss_spawned = False
+    boss_spawned = False   
     running = True
+    switch_music = True
+    start_time = pygame.time.get_ticks()
+    stop_sound = True
     while running:
         clock.tick(FPS)
+        current_time = pygame.time.get_ticks()
         redraw_window(screen, BG_IMG)
 
         # Event handler
@@ -194,7 +224,8 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     # Player shoots a laser
-                    player_laser = Laser(player_ship.x + player_ship.ship_image.get_width() / 2 - PLAYER_LASER.get_width() / 2, player_ship.y, PLAYER_LASER)
+                    play_sound(LASER_SOUND_FILE, 0.2)
+                    player_laser = Laser(player_ship.x + player_ship.ship_image.get_width() // 2 - PLAYER_LASER.get_width() // 2, player_ship.y, PLAYER_LASER)
                     player_ship.lasers.append(player_laser)
        
        # Check for collision with enemies
@@ -210,9 +241,21 @@ def main():
         # Enemy Spawner
         if (len(enemies) == 0 and wave < 5) and player_ship.health > 0:
             wave += 1
+            start_time = current_time
 
+            #Background music switch
+            if wave <= 4 and switch_music:
+                switch_music = False
+                pygame.mixer.music.load(BACKGROUND_SOUND_FILE)
+                pygame.mixer.music.set_volume(0.5)
+                pygame.mixer.music.play(-1)
+            elif wave >= 5:
+                pygame.mixer.music.load(BOSS_BATTLE_SOUND_FILE)
+                pygame.mixer.music.set_volume(0.5)
+                pygame.mixer.music.play(-1)
+                
             selectEnemy = ["tank", "normal", "fast"]
-            for _ in range(wave * 5): 
+            for _ in range(wave * 8):
                 enemy_type = random.choice(selectEnemy)
                 if enemy_type == "tank":
                     enemy_health = 120
@@ -223,12 +266,25 @@ def main():
 
                 enemy = Enemy(random.randint(50, WIDTH - 100), random.randint(-1500, -100), enemy_health, enemy_type)
                 enemies.append(enemy)
-        elif wave == 5 and not boss_spawned and player_ship.health > 0:
+        elif wave >= 5 and not boss_spawned and player_ship.health > 0:
             #Wave 5 boss
-            enemy = Enemy(random.randint(50, WIDTH - 100), random.randint(-1500, -100), 3500, "boss")
+            play_sound(BOSS_SPAWN_SOUND_FILE, 1.0)
+            enemy = Enemy(random.randint(50, WIDTH - 100), random.randint(-1500, -100), 4000, "boss")
             enemies.append(enemy)
             boss_spawned = True
             
+        # Player Wins! Sound
+        if (len(enemies) == 0 and wave >= 5) and (player_ship.health > 0) and stop_sound:
+            pygame.mixer.music.stop()
+            play_sound(GAME_WON_SOUND, 1.0)
+            stop_sound = False
+        # Player Loss! Sound
+        elif player_ship.health <= 0 and stop_sound:
+            pygame.mixer.music.stop()
+            play_sound(GAME_LOST_SOUND, 1.0)
+            stop_sound = False
+                
+             
         """
         The if statements checks both the keys pressed and the player's position. 
         For example, it verifies whether a key is pressed and checks if the player is out of bounds before allowing movement. 

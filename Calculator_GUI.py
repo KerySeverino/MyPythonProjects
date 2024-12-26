@@ -5,7 +5,7 @@ window = Tk()
 window.title("Calculator")
 
 #Sets the icon of the calculator program when is opened
-icon_image = PhotoImage(file = "/Users/keryseverinodiaz/Desktop/MyProjects/100DaysOfPython/MyPythonProjects/icon.png") 
+icon_image = PhotoImage(file = "/Users/keryseverinodiaz/Desktop/MyProjects/MyPythonProjects/assets/icon.png") 
 window.iconphoto(True, icon_image)
 
 #Creates the entry window, where the user sees the input numbers

@@ -30,7 +30,7 @@ def main():
 
     pygame.display.set_caption("Tic-Tac-Toe")
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    image_path = os.path.join("Beginner_Projects", "tictactoe_assets", "blackframe.jpg")
+    image_path = os.path.join("MyPythonProjects", "assets", "blackframe.jpg")
     BG_IMG = pygame.transform.scale(pygame.image.load(image_path), (WIDTH, HEIGHT))
 
 
